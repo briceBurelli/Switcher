@@ -27,6 +27,7 @@ RESOURCES_DIR="${CONTENTS_DIR}/Resources"
 
 INSTALL_FLAG=false
 RUN_FLAG=false
+DMG_FLAG=false
 
 # Traitement des arguments
 for arg in "$@"; do
@@ -37,11 +38,15 @@ for arg in "$@"; do
         --run|-r)
             RUN_FLAG=true
             ;;
+        --dmg|-d)
+            DMG_FLAG=true
+            ;;
         --help|-h)
             echo "Usage: ./build.sh [OPTIONS]"
             echo "Options:"
             echo "  --install, -i   Installe Switcher.app dans /Applications (ou ~/Applications)"
             echo "  --run, -r       Lance Switcher.app après la compilation"
+            echo "  --dmg, -d       Compile en universel (Apple Silicon + Intel) et crée Switcher.dmg à partager"
             echo "  --help, -h      Affiche cette aide"
             exit 0
             ;;
@@ -55,9 +60,14 @@ echo -e "${PURPLE}======================================================${NC}"
 # 1. Compilation Swift Package Manager en mode Release
 echo -e "\n${BLUE}[1/5] Compilation Swift en mode Release...${NC}"
 cd "${PROJECT_DIR}"
-swift build -c release
-
-BIN_PATH="${PROJECT_DIR}/.build/release/${APP_NAME}"
+if [ "$DMG_FLAG" = true ]; then
+    # Universel : fonctionne aussi sur les Mac Intel
+    swift build -c release --arch arm64 --arch x86_64
+    BIN_PATH="${PROJECT_DIR}/.build/apple/Products/Release/${APP_NAME}"
+else
+    swift build -c release
+    BIN_PATH="${PROJECT_DIR}/.build/release/${APP_NAME}"
+fi
 if [ ! -f "${BIN_PATH}" ]; then
     echo -e "${RED}Erreur : Le binaire ${BIN_PATH} n'a pas été généré.${NC}"
     exit 1
@@ -148,6 +158,22 @@ else
     echo -e "${GREEN}✓ Bundle disponible dans : ${APP_BUNDLE}${NC}"
     echo -e "${YELLOW}Conseil : Utilisez './build.sh --install' pour installer dans /Applications.${NC}"
     APP_TO_LAUNCH="${APP_BUNDLE}"
+fi
+
+# Image disque à partager : glisser-déposer vers Applications + notice d'installation
+if [ "$DMG_FLAG" = true ]; then
+    echo -e "\n${BLUE}Création de l'image disque...${NC}"
+    # Préparée hors de Documents : iCloud y remet des attributs Finder qui invalident la signature
+    DMG_STAGING="$(mktemp -d)"
+    DMG_PATH="${BUILD_DIR}/${APP_NAME}.dmg"
+    rm -f "${DMG_PATH}"
+    cp -R "${APP_BUNDLE}" "${DMG_STAGING}/"
+    ln -s /Applications "${DMG_STAGING}/Applications"
+    cp "${PROJECT_DIR}/Resources/Lisez-moi.txt" "${DMG_STAGING}/Lisez-moi.txt"
+    xattr -cr "${DMG_STAGING}"
+    hdiutil create -volname "${APP_NAME}" -srcfolder "${DMG_STAGING}" -ov -format UDZO "${DMG_PATH}" >/dev/null
+    rm -rf "${DMG_STAGING}"
+    echo -e "${GREEN}✓ Image disque prête : ${DMG_PATH}${NC}"
 fi
 
 if [ "$RUN_FLAG" = true ]; then

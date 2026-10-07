@@ -1,0 +1,66 @@
+SWITCHER — ⌘Tab fenêtre par fenêtre pour macOS
+===============================================
+
+Switcher remplace le ⌘Tab de macOS : au lieu d'une icône par application,
+chaque FENÊTRE a sa propre carte avec un aperçu, comme Alt-Tab sous Windows.
+Votre brouillon Thunderbird, chacune de vos fenêtres Chrome… tout est accessible.
+
+Configuration requise : macOS 14 (Sonoma) ou plus récent, Mac Apple Silicon ou Intel.
+
+
+1. INSTALLATION
+---------------
+1. Glissez « Switcher » sur le dossier « Applications » dans cette fenêtre.
+2. Ouvrez Switcher depuis le dossier Applications.
+
+   Switcher n'est pas distribué par l'App Store : la première fois, macOS
+   affiche « Apple n'a pas pu vérifier que Switcher ne contient pas de
+   logiciel malveillant ». C'est normal pour une app maison :
+     a. Cliquez sur « Terminé ».
+     b. Ouvrez Réglages Système › Confidentialité et sécurité.
+     c. Tout en bas, à côté de « Switcher a été bloqué », cliquez sur
+        « Ouvrir quand même », puis confirmez avec Touch ID ou votre mot de passe.
+
+   (Alternative dans le Terminal :  xattr -dr com.apple.quarantine /Applications/Switcher.app )
+
+3. Une fenêtre d'accueil s'ouvre pour les autorisations, et l'icône de
+   Switcher (deux rectangles) apparaît dans la barre des menus.
+
+
+2. AUTORISATIONS
+----------------
+• Accessibilité — OBLIGATOIRE. Pour intercepter ⌘Tab et amener la bonne
+  fenêtre au premier plan. Cliquez sur « Autoriser », puis activez Switcher
+  dans Réglages Système › Confidentialité et sécurité › Accessibilité.
+  ⌘Tab est remplacé dès que c'est fait.
+
+• Enregistrement de l'écran — facultatif, pour les aperçus des fenêtres
+  (sinon les cartes affichent l'icône de l'app). Si Switcher n'apparaît pas
+  dans la liste, cliquez sur « + » et choisissez-le dans Applications.
+  macOS propose ensuite « Quitter et rouvrir » : acceptez.
+
+Tant que l'Accessibilité n'est pas accordée, ⌘Tab garde son comportement habituel.
+
+
+3. UTILISATION
+--------------
+  Maintenir ⌘ + Tab     Ouvrir le sélecteur (la fenêtre précédente est choisie)
+  Tab / ⇧Tab            Fenêtre suivante / précédente
+  ← → ↑ ↓ ou la souris  Naviguer
+  Relâcher ⌘            Amener la fenêtre choisie au premier plan
+  W  (ou le ×)          Fermer la fenêtre
+  Q                     Quitter l'app
+  H / M                 Masquer l'app / Réduire la fenêtre
+  Échap                 Annuler
+
+
+4. LANCER SWITCHER AU DÉMARRAGE
+-------------------------------
+Clic sur l'icône Switcher dans la barre des menus › « Ouvrir au démarrage ».
+
+
+5. RETROUVER LE ⌘TAB DE MACOS / DÉSINSTALLER
+--------------------------------------------
+Clic sur l'icône Switcher › « Quitter Switcher » : le ⌘Tab de macOS revient
+immédiatement. Pour désinstaller, quittez Switcher puis mettez Switcher.app
+à la corbeille.
